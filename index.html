@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparador de Tamaño — Kipling Seoul</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Montserrat',Helvetica,Arial,sans-serif;background:#fff;display:flex;align-items:flex-start;justify-content:center;min-height:100vh;padding:2rem;color:#1a1a1a;}
+.comparator{background:#fff;padding:0;width:100%;max-width:900px;}
+.kip-header{border-bottom:1px solid #e5e5e5;padding-bottom:16px;margin-bottom:20px;}
+.section-label{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#1a1a1a;font-weight:600;margin-bottom:12px;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{padding:7px 16px;border-radius:999px;border:1.5px solid #ccc;background:#fff;color:#666;font-size:11px;font-family:'Montserrat',sans-serif;font-weight:500;cursor:pointer;transition:all .15s;letter-spacing:.06em;text-transform:uppercase;}
+.chip:hover{border-color:#1a1a1a;color:#1a1a1a;}
+.chip.on{background:#1a1a1a;color:#fff;border-color:#1a1a1a;}
+.stage{position:relative;background:#f7f6f4;overflow:hidden;margin-top:20px;}
+.bag-wrap{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
+.bag-img{display:block;user-select:none;pointer-events:none;-webkit-user-drag:none}
+.dim-v{position:absolute;left:-28px;top:0;height:100%;display:flex;flex-direction:column;align-items:center;pointer-events:none}
+.dim-h{position:absolute;bottom:-26px;left:0;width:100%;display:flex;flex-direction:row;align-items:center;pointer-events:none}
+.dbar{background:#ccc;flex:1}
+.dim-v .dbar{width:1px}
+.dim-h .dbar{height:1px}
+.tick-v{width:6px;height:1px;background:#ccc}
+.tick-h{height:6px;width:1px;background:#ccc}
+.dlabel{font-size:10px;color:#999;white-space:nowrap;padding:2px 5px;letter-spacing:.06em;font-family:'Montserrat',sans-serif;font-weight:500;}
+.draggable{position:absolute;cursor:grab;touch-action:none;z-index:5;}
+.draggable:active{cursor:grabbing;}
+.draggable img{display:block;width:100%;height:100%;object-fit:contain;user-select:none;pointer-events:none;-webkit-user-drag:none;}
+.obj-badge{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;font-size:9px;letter-spacing:.08em;text-transform:uppercase;font-family:'Montserrat',sans-serif;font-weight:500;border-radius:2px;padding:3px 8px;pointer-events:none;white-space:nowrap;opacity:0;transition:opacity .15s;}
+.draggable:hover .obj-badge{opacity:1}
+.obj-name{position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);font-size:10px;color:#999;white-space:nowrap;pointer-events:none;letter-spacing:.06em;text-transform:uppercase;font-family:'Montserrat',sans-serif;font-weight:400;}
+.drag-hint{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;color:#aaa;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:500;}
+.drag-hint svg{animation:drag-anim 1.8s ease-in-out infinite;flex-shrink:0;}
+@keyframes drag-anim{0%{transform:translate(0,0)}30%{transform:translate(10px,-6px)}60%{transform:translate(18px,0px)}100%{transform:translate(0,0)}}
+@keyframes pulse-in{0%{transform:scale(0.85);opacity:0}60%{transform:scale(1.05);opacity:1}100%{transform:scale(1);opacity:1}}
+.draggable{animation:pulse-in 0.3s ease forwards;}
+</style>
+</head>
+<body>
+<div class="comparator">
+  <div class="kip-header">
+    <p class="section-label">Comparar con</p>
+    <div class="chips" id="chips"></div>
+  </div>
+  <div class="stage" id="stage">
+    <div class="bag-wrap" id="bag-wrap">
+      <img class="bag-img" id="bag-img" src="bag.png" alt="Mochila Kipling Seoul" draggable="false"/>
+      <div class="dim-v"><div class="tick-v"></div><div class="dbar"></div><span class="dlabel">44 cm</span><div class="dbar"></div><div class="tick-v"></div></div>
+      <div class="dim-h"><div class="tick-h"></div><div class="dbar"></div><span class="dlabel">35 cm</span><div class="dbar"></div><div class="tick-h"></div></div>
+    </div>
+  </div>
+  <div class="drag-hint">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M7 2C7 1.44772 7.44772 1 8 1C8.55228 1 9 1.44772 9 2V9.5H10.5V5C10.5 4.44772 10.9477 4 11.5 4C12.0523 4 12.5 4.44772 12.5 5V9.5H13.5V6.5C13.5 5.94772 13.9477 5.5 14.5 5.5C15.0523 5.5 15.5 5.94772 15.5 6.5V11C15.5 11 15.5 11.5 15.5 12C15.5 14.4853 13.4853 16.5 11 16.5H10C8.067 16.5 6.5 14.933 6.5 13V10H5.5C4.94772 10 4.5 9.55228 4.5 9C4.5 8.44772 4.94772 8 5.5 8H7V2Z" fill="#ccc"/>
+    </svg>
+    Arrastra los objetos sobre la mochila para comparar su tamaño
+  </div>
+</div>
+<script>
+const BAG_REAL={w:35,h:44};
+const ITEMS=[
+  {id:'bottle',label:'Botella 700ml',w:12.25,h:31.0,src:'bottle.png'},
+  {id:'notebook',label:'Cuaderno',w:21.0,h:29.7,src:'notebook.png'},
+  {id:'laptop',label:'Laptop 13"',w:21.0,h:30.5,src:'laptop.png'},
+  {id:'phone',label:'Smartphone',w:7.5,h:16.0,src:'phone.png'},
+  {id:'passport',label:'Pasaporte',w:12.5,h:17.5,src:'passport.png'},
+  {id:'wallet',label:'Billetera Kipling',w:11.0,h:9.0,src:'wallet.png'}
+];
+let activeItems=new Set(['bottle','notebook','phone']);
+let PX_PER_CM=8;
+
+function initScale(){
+  const stage=document.getElementById('stage');
+  const bagImg=document.getElementById('bag-img');
+  const bagPxW=stage.offsetWidth*0.50;
+  PX_PER_CM=bagPxW/BAG_REAL.w;
+  const bagPxH=BAG_REAL.h*PX_PER_CM;
+  bagImg.style.width=bagPxW+'px';
+  bagImg.style.height=bagPxH+'px';
+  stage.style.height=(bagPxH*1.6)+'px';
+}
+
+function spawnItem(item){
+  const stage=document.getElementById('stage');
+  if(document.getElementById('drag-'+item.id))return;
+  const pw=item.w*PX_PER_CM,ph=item.h*PX_PER_CM;
+  const sR=stage.getBoundingClientRect(),bR=document.getElementById('bag-wrap').getBoundingClientRect();
+  const side=Math.random()>.5?1:-1;
+  let cx=bR.left-sR.left+bR.width/2+side*(bR.width/2+pw/2+24)+(Math.random()-.5)*30;
+  let cy=bR.top-sR.top+(Math.random()*bR.height*0.6)+bR.height*0.2-ph/2;
+  cx=Math.max(0,Math.min(sR.width-pw,cx));
+  cy=Math.max(0,Math.min(sR.height-ph,cy));
+  const el=document.createElement('div');
+  el.className='draggable';el.id='drag-'+item.id;
+  el.style.cssText=`left:${cx}px;top:${cy}px;width:${pw}px;height:${ph}px;`;
+  const wl=Number.isInteger(item.w)?item.w:item.w.toFixed(1);
+  const hl=Number.isInteger(item.h)?item.h:item.h.toFixed(1);
+  el.innerHTML=`<img src="${item.src}" alt="${item.label}" draggable="false"/><div class="obj-badge">${wl} × ${hl} cm</div><div class="obj-name">${item.label}</div>`;
+  stage.appendChild(el);
+  makeDraggable(el,stage);
+}
+
+function removeItem(id){const el=document.getElementById('drag-'+id);if(el)el.remove();}
+
+function makeDraggable(el,container){
+  let ox=0,oy=0,sx=0,sy=0,dragging=false;
+  const start=(cx,cy)=>{dragging=true;sx=cx;sy=cy;ox=parseFloat(el.style.left);oy=parseFloat(el.style.top);el.style.zIndex=20;};
+  const move=(cx,cy)=>{
+    if(!dragging)return;
+    const r=container.getBoundingClientRect();
+    const elW=parseFloat(el.style.width),elH=parseFloat(el.style.height);
+    let nx=ox+(cx-sx),ny=oy+(cy-sy);
+    nx=Math.max(0,Math.min(r.width-elW,nx));
+    ny=Math.max(0,Math.min(r.height-elH,ny));
+    el.style.left=nx+'px';el.style.top=ny+'px';
+  };
+  const end=()=>{dragging=false;el.style.zIndex=5;};
+  el.addEventListener('mousedown',e=>{e.preventDefault();start(e.clientX,e.clientY);});
+  document.addEventListener('mousemove',e=>move(e.clientX,e.clientY));
+  document.addEventListener('mouseup',end);
+  el.addEventListener('touchstart',e=>{e.preventDefault();start(e.touches[0].clientX,e.touches[0].clientY);},{passive:false});
+  document.addEventListener('touchmove',e=>{if(dragging){e.preventDefault();move(e.touches[0].clientX,e.touches[0].clientY);}},{passive:false});
+  document.addEventListener('touchend',end);
+}
+
+function buildChips(){
+  const c=document.getElementById('chips');
+  c.innerHTML=ITEMS.map(o=>`<button class="chip${activeItems.has(o.id)?' on':''}" data-id="${o.id}">${o.label}</button>`).join('');
+  c.querySelectorAll('.chip').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const id=btn.dataset.id;
+      if(activeItems.has(id)){activeItems.delete(id);removeItem(id);}
+      else{activeItems.add(id);spawnItem(ITEMS.find(i=>i.id===id));}
+      buildChips();
+    });
+  });
+}
+
+buildChips();
+const bagImg=document.getElementById('bag-img');
+function init(){initScale();setTimeout(()=>ITEMS.filter(i=>activeItems.has(i.id)).forEach(spawnItem),80);}
+if(bagImg.complete&&bagImg.naturalWidth)init();else bagImg.addEventListener('load',init);
+</script>
+</body>
+</html>
