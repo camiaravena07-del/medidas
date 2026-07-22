@@ -68,10 +68,9 @@ const ITEMS=[
   {id:'laptop',label:'Laptop 13"',w:21.0,h:30.5,src:'laptop.png'},
   {id:'phone',label:'Smartphone',w:7.5,h:16.0,src:'phone.png'},
   {id:'passport',label:'Pasaporte',w:8.8,h:12.5,src:'passport.png'},
-  {id:'wallet',label:'Billetera Kipling',w:11.0,h:9.0,src:'wallet.png'},
-  {id:'rafa',label:'🐾 Sorpresa',w:64.46,h:60.0,src:'rafa.png'}
+  {id:'wallet',label:'Billetera Kipling',w:11.0,h:9.0,src:'wallet.png'}
 ];
-let activeItems=new Set(['bottle','notebook','phone']);
+let activeItem='bottle';
 let PX_PER_CM=8;
 
 function initScale(){
@@ -90,9 +89,8 @@ function spawnItem(item){
   if(document.getElementById('drag-'+item.id))return;
   const pw=item.w*PX_PER_CM,ph=item.h*PX_PER_CM;
   const sR=stage.getBoundingClientRect(),bR=document.getElementById('bag-wrap').getBoundingClientRect();
-  const side=Math.random()>.5?1:-1;
-  let cx=bR.left-sR.left+bR.width/2+side*(bR.width/2+pw/2+24)+(Math.random()-.5)*30;
-  let cy=bR.top-sR.top+(Math.random()*bR.height*0.6)+bR.height*0.2-ph/2;
+  let cx=bR.left-sR.left+bR.width/2-pw/2;
+  let cy=bR.top-sR.top+bR.height/2-ph/2;
   cx=Math.max(0,Math.min(sR.width-pw,cx));
   cy=Math.max(0,Math.min(sR.height-ph,cy));
   const el=document.createElement('div');
@@ -130,12 +128,14 @@ function makeDraggable(el,container){
 
 function buildChips(){
   const c=document.getElementById('chips');
-  c.innerHTML=ITEMS.map(o=>`<button class="chip${activeItems.has(o.id)?' on':''}" data-id="${o.id}">${o.label}</button>`).join('');
+  c.innerHTML=ITEMS.map(o=>`<button class="chip${activeItem===o.id?' on':''}" data-id="${o.id}">${o.label}</button>`).join('');
   c.querySelectorAll('.chip').forEach(btn=>{
     btn.addEventListener('click',()=>{
       const id=btn.dataset.id;
-      if(activeItems.has(id)){activeItems.delete(id);removeItem(id);}
-      else{activeItems.add(id);spawnItem(ITEMS.find(i=>i.id===id));}
+      if(activeItem===id) return;
+      removeItem(activeItem);
+      activeItem=id;
+      spawnItem(ITEMS.find(i=>i.id===id));
       buildChips();
     });
   });
@@ -143,7 +143,7 @@ function buildChips(){
 
 buildChips();
 const bagImg=document.getElementById('bag-img');
-function init(){initScale();setTimeout(()=>ITEMS.filter(i=>activeItems.has(i.id)).forEach(spawnItem),80);}
+function init(){initScale();setTimeout(()=>spawnItem(ITEMS.find(i=>i.id===activeItem)),80);}
 if(bagImg.complete&&bagImg.naturalWidth)init();else bagImg.addEventListener('load',init);
 </script>
 </body>
