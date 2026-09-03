@@ -73,6 +73,170 @@ const ITEMS=[
 let activeItem='bottle';
 let PX_PER_CM=8;
 
+/* =================================================================
+   IMAGEN PRINCIPAL DINÁMICA — se toma del Google feed (g:image_link)
+   Así la foto siempre calza con el color del producto de la página.
+   Si algo falla, se queda con bag.png (nunca se rompe la vista).
+   ================================================================= */
+const FEED_URL='https://resources.komaxchile.cl/google-feeds/kipling-cl-google-feed.xml';
+const CACHE_HOURS=6; // el feed se actualiza a diario; cacheamos por sesión
+
+// Normaliza una URL a solo su path, en minúsculas y sin "/" final
+function normPath(u){
+  try{return new URL(u,location.origin).pathname.replace(/\/+$/,'').toLowerCase();}
+  catch(e){return String(u||'').split('?')[0].replace(/\/+$/,'').toLowerCase();}
+}
+// Normaliza un SKU/ID: solo letras y números en minúscula
+function normSku(s){return String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');}
+
+/* Cómo sabe el widget QUÉ producto es:
+   1) ?url=<url del producto>   -> recomendado si el widget va en un <iframe>
+   2) ?sku=<sku>  ó  ?pid=<sku>
+   3) por defecto: la URL de la página actual (si vive dentro del PDP)      */
+function resolveProductRef(){
+  const q=new URLSearchParams(location.search);
+  const url=q.get('url')||location.href;
+  const sku=q.get('sku')||q.get('pid')||'';
+  return {path:normPath(url),sku:sku.trim()};
+}
+
+// Lee el primer tag con texto de una lista de nombres (maneja el namespace g:)
+function firstText(item,names){
+  for(const n of names){
+    const els=item.getElementsByTagName(n);
+    if(els.length&&els[0].textContent.trim())return els[0].textContent.trim();
+  }
+  const locals=names.map(n=>n.split(':').pop().toLowerCase());
+  const all=item.getElementsByTagName('*');
+  for(let i=0;i<all.length;i++){
+    const el=all[i];
+    if(locals.includes((el.localName||'').toLowerCase())&&el.textContent.trim())
+      return el.textContent.trim();
+  }
+  return '';
+}
+
+async function fetchFeedImage(ref){
+  const key='kip_bag_'+(ref.sku||ref.path);
+  try{
+    const c=JSON.parse(sessionStorage.getItem(key)||'null');
+    if(c&&c.img&&(Date.now()-c.t)<CACHE_HOURS*3600e3)return c.img;
+  }catch(e){}
+
+  const res=await fetch(FEED_URL,{mode:'cors'});
+  if(!res.ok)throw new Error('feed HTTP '+res.status);
+  const doc=new DOMParser().parseFromString(await res.text(),'application/xml');
+  if(doc.getElementsByTagName('parsererror').length)throw new Error('XML inválido');
+
+  const items=doc.getElementsByTagName('item');
+  const wantSku=normSku(ref.sku);
+  let img='';
+  for(let i=0;i<items.length;i++){
+    const it=items[i];
+    const link=normPath(firstText(it,['g:link','link']));
+    const id=normSku(firstText(it,['g:id','g:mpn','g:item_group_id']));
+    const byUrl=ref.path&&link&&link===ref.path;
+    const bySku=wantSku&&id&&(id===wantSku||id.includes(wantSku)||wantSku.includes(id));
+    if(byUrl||bySku){
+      img=firstText(it,['g:image_link','image_link']);
+      if(img)break;
+    }
+  }
+  if(img){try{sessionStorage.setItem(key,JSON.stringify({t:Date.now(),img}));}catch(e){}}
+  return img;
+}
+
+/* --- Quitar fondo + recorte en el navegador (canvas) ---
+   Lee la foto del feed, borra el fondo conectado al borde (así no come zonas
+   claras DENTRO de la mochila) y recorta al contorno. Resultado: la mochila
+   llena su caja y los ticks de 44/35 cm se respetan. Sin tocar el feed.       */
+const QUITAR_FONDO=true;   // false = usa la foto del feed tal cual, con fondo
+const MAX_PX=1000;         // tope del lado mayor al procesar (rendimiento)
+const TOL_FONDO=40;        // tolerancia de color vs. el fondo (súbela si queda halo)
+
+function cargarImg(url){
+  return new Promise((res,rej)=>{
+    const im=new Image();
+    im.crossOrigin='anonymous';           // necesario para poder leer los píxeles
+    im.onload=()=>res(im);
+    im.onerror=()=>rej(new Error('no cargó la imagen (¿CORS?)'));
+    im.src=url;
+  });
+}
+
+function quitarFondo(data,w,h,tol){
+  const d=data.data, at=(x,y)=>(y*w+x)*4;
+  const c=[at(0,0),at(w-1,0),at(0,h-1),at(w-1,h-1)];   // color de fondo = esquinas
+  let br=0,bgc=0,bbc=0;
+  c.forEach(i=>{br+=d[i];bgc+=d[i+1];bbc+=d[i+2];});
+  br/=4;bgc/=4;bbc/=4;
+  const cerca=i=>{const r=d[i]-br,g=d[i+1]-bgc,b=d[i+2]-bbc;return (r*r+g*g+b*b)<tol*tol;};
+  const vis=new Uint8Array(w*h), st=[];
+  const push=(x,y)=>{if(x>=0&&x<w&&y>=0&&y<h){const p=y*w+x;if(!vis[p]){vis[p]=1;st.push(p);}}};
+  for(let x=0;x<w;x++){push(x,0);push(x,h-1);}       // flood fill desde los bordes
+  for(let y=0;y<h;y++){push(0,y);push(w-1,y);}
+  while(st.length){
+    const p=st.pop(), i=p*4;
+    if(!cerca(i))continue;
+    d[i+3]=0;                                          // transparente
+    const x=p%w, y=(p/w)|0;
+    push(x+1,y);push(x-1,y);push(x,y+1);push(x,y-1);
+  }
+}
+
+function bboxAlpha(data,w,h){
+  const d=data.data; let x0=w,y0=h,x1=-1,y1=-1;
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+    if(d[(y*w+x)*4+3]>10){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}
+  }
+  return x1<0?null:{x0,y0,x1,y1};
+}
+
+async function procesarImagen(url){
+  const img=await cargarImg(url);
+  let w=img.naturalWidth,h=img.naturalHeight;
+  const s=Math.min(1,MAX_PX/Math.max(w,h));
+  w=Math.round(w*s);h=Math.round(h*s);
+  const cv=document.createElement('canvas');cv.width=w;cv.height=h;
+  const ctx=cv.getContext('2d',{willReadFrequently:true});
+  ctx.drawImage(img,0,0,w,h);
+  let data;
+  try{data=ctx.getImageData(0,0,w,h);}
+  catch(e){throw new Error('canvas tainted: falta CORS en el host de las imágenes');}
+  quitarFondo(data,w,h,TOL_FONDO);
+  ctx.putImageData(data,0,0);
+  const b=bboxAlpha(data,w,h);
+  if(!b)throw new Error('no se detectó la mochila (revisa TOL_FONDO)');
+  const pad=2;
+  const bx=Math.max(0,b.x0-pad),by=Math.max(0,b.y0-pad);
+  const bw=Math.min(w-1,b.x1+pad)-bx+1,bh=Math.min(h-1,b.y1+pad)-by+1;
+  const out=document.createElement('canvas');out.width=bw;out.height=bh;
+  out.getContext('2d').drawImage(cv,bx,by,bw,bh,0,0,bw,bh);
+  return out.toDataURL('image/png');
+}
+
+async function applyDynamicBag(){
+  const bagImg=document.getElementById('bag-img');
+  let url;
+  try{
+    url=await fetchFeedImage(resolveProductRef());
+    if(!url){console.warn('[comparador] sin coincidencia en el feed, uso bag.png');return;}
+  }catch(e){
+    console.warn('[comparador] no pude leer el feed, uso bag.png:',e.message);return;
+  }
+  if(!QUITAR_FONDO){bagImg.src=url;return;}
+  try{
+    bagImg.src=await procesarImagen(url);   // transparente y recortada: medidas OK
+  }catch(e){
+    // No se pudo quitar el fondo (típico: falta CORS en el host de imágenes).
+    // Fallback: muestro la foto tal cual — color correcto, pero las medidas
+    // pueden quedar algo corridas por el fondo. El warning te avisa qué pasó.
+    console.warn('[comparador] no pude quitar el fondo, uso la foto tal cual:',e.message);
+    bagImg.src=url;
+  }
+}
+/* ================================================================= */
+
 function initScale(){
   const stage=document.getElementById('stage');
   const bagImg=document.getElementById('bag-img');
@@ -142,9 +306,12 @@ function buildChips(){
 }
 
 buildChips();
-const bagImg=document.getElementById('bag-img');
-function init(){initScale();setTimeout(()=>spawnItem(ITEMS.find(i=>i.id===activeItem)),80);}
-if(bagImg.complete&&bagImg.naturalWidth)init();else bagImg.addEventListener('load',init);
+function boot(){
+  initScale();
+  applyDynamicBag(); // intenta reemplazar bag.png por la imagen del feed
+  setTimeout(()=>spawnItem(ITEMS.find(i=>i.id===activeItem)),80);
+}
+if(document.readyState!=='loading')boot();else document.addEventListener('DOMContentLoaded',boot);
 </script>
 </body>
 </html>
