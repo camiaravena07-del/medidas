@@ -3,118 +3,65 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Preview — Comparador de Tamaño Kipling</title>
+<title>Comparador de Tamaño — Kipling Seoul</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Montserrat',Helvetica,Arial,sans-serif;background:#fff;color:#1a1a1a;padding:2rem;display:flex;justify-content:center;}
-.wrap{width:100%;max-width:900px;}
-h1{font-size:14px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;margin-bottom:4px;}
-.sub{font-size:12px;color:#888;margin-bottom:20px;}
-
-/* ---- panel de control ---- */
-.panel{border:1px solid #e5e5e5;border-radius:12px;padding:16px;margin-bottom:22px;}
-.panel .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
-.panel label.lbl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#666;font-weight:600;width:100%;}
-input[type=text]{flex:1;min-width:220px;padding:9px 12px;border:1.5px solid #ccc;border-radius:8px;font:inherit;font-size:13px;}
-input[type=text]:focus{outline:none;border-color:#1a1a1a;}
-button.go{padding:9px 18px;border:none;border-radius:8px;background:#1a1a1a;color:#fff;font:inherit;font-size:13px;cursor:pointer;letter-spacing:.04em;}
-button.go:hover{opacity:.85;}
-button.ghost{background:#fff;color:#1a1a1a;border:1.5px solid #ccc;}
-.or{text-align:center;color:#bbb;font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin:6px 0;}
-.toggles{display:flex;gap:18px;flex-wrap:wrap;align-items:center;font-size:12px;color:#444;margin-bottom:12px;}
-.toggles label{display:flex;align-items:center;gap:6px;cursor:pointer;}
-.toggles input[type=range]{vertical-align:middle;}
-.hint{font-size:11px;color:#999;margin-top:2px;}
-.log{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;background:#101010;color:#dcdcdc;border-radius:8px;padding:11px 13px;white-space:pre-wrap;line-height:1.55;max-height:180px;overflow:auto;}
-.log .ok{color:#7CFC9B}.log .err{color:#ff8080}.log .warn{color:#ffcf6b}.log .dim{color:#8a8a8a}
-
-/* ---- comparador (idéntico a producción) ---- */
-.comparator{background:#fff;}
+body{font-family:'Montserrat',Helvetica,Arial,sans-serif;background:#fff;display:flex;align-items:flex-start;justify-content:center;min-height:100vh;padding:2rem;color:#1a1a1a;}
+.comparator{background:#fff;padding:0;width:100%;max-width:900px;}
 .kip-header{border-bottom:1px solid #e5e5e5;padding-bottom:16px;margin-bottom:20px;}
 .section-label{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#1a1a1a;font-weight:600;margin-bottom:12px;}
 .chips{display:flex;flex-wrap:wrap;gap:8px;}
-.chip{padding:7px 16px;border-radius:999px;border:1.5px solid #ccc;background:#fff;color:#666;font-size:11px;font-weight:500;cursor:pointer;transition:all .15s;letter-spacing:.06em;text-transform:uppercase;}
+.chip{padding:7px 16px;border-radius:999px;border:1.5px solid #ccc;background:#fff;color:#666;font-size:11px;font-family:'Montserrat',sans-serif;font-weight:500;cursor:pointer;transition:all .15s;letter-spacing:.06em;text-transform:uppercase;}
 .chip:hover{border-color:#1a1a1a;color:#1a1a1a;}
 .chip.on{background:#1a1a1a;color:#fff;border-color:#1a1a1a;}
 .stage{position:relative;background:#f7f6f4;overflow:hidden;margin-top:20px;}
 .bag-wrap{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
-.bag-wrap.ph-on{background:#ededed;border:1px dashed #ccc;border-radius:10px;}
-.bag-wrap .ph-txt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:#aaa;font-size:11px;padding:14px;letter-spacing:.05em;line-height:1.5;}
-.bag-wrap.has-img{background:none;border:none;}
-.bag-wrap.has-img .ph-txt{display:none;}
-.bag-img{display:block;user-select:none;pointer-events:none;-webkit-user-drag:none;}
-.dim-v{position:absolute;left:-28px;top:0;height:100%;display:flex;flex-direction:column;align-items:center;pointer-events:none;}
-.dim-h{position:absolute;bottom:-26px;left:0;width:100%;display:flex;flex-direction:row;align-items:center;pointer-events:none;}
-.dbar{background:#ccc;flex:1}.dim-v .dbar{width:1px}.dim-h .dbar{height:1px}
-.tick-v{width:6px;height:1px;background:#ccc}.tick-h{height:6px;width:1px;background:#ccc}
-.dlabel{font-size:10px;color:#999;white-space:nowrap;padding:2px 5px;letter-spacing:.06em;font-weight:500;}
-.draggable{position:absolute;cursor:grab;touch-action:none;z-index:5;animation:pulse-in .3s ease forwards;}
+.bag-img{display:block;user-select:none;pointer-events:none;-webkit-user-drag:none}
+.dim-v{position:absolute;left:-28px;top:0;height:100%;display:flex;flex-direction:column;align-items:center;pointer-events:none}
+.dim-h{position:absolute;bottom:-26px;left:0;width:100%;display:flex;flex-direction:row;align-items:center;pointer-events:none}
+.dbar{background:#ccc;flex:1}
+.dim-v .dbar{width:1px}
+.dim-h .dbar{height:1px}
+.tick-v{width:6px;height:1px;background:#ccc}
+.tick-h{height:6px;width:1px;background:#ccc}
+.dlabel{font-size:10px;color:#999;white-space:nowrap;padding:2px 5px;letter-spacing:.06em;font-family:'Montserrat',sans-serif;font-weight:500;}
+.draggable{position:absolute;cursor:grab;touch-action:none;z-index:5;}
 .draggable:active{cursor:grabbing;}
 .draggable img{display:block;width:100%;height:100%;object-fit:contain;user-select:none;pointer-events:none;-webkit-user-drag:none;}
-.draggable.ph{border:1.5px dashed #b8b8b8;border-radius:8px;background:rgba(255,255,255,.55);}
-.obj-badge{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;font-size:9px;letter-spacing:.08em;text-transform:uppercase;font-weight:500;border-radius:2px;padding:3px 8px;pointer-events:none;white-space:nowrap;opacity:0;transition:opacity .15s;}
+.obj-badge{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;font-size:9px;letter-spacing:.08em;text-transform:uppercase;font-family:'Montserrat',sans-serif;font-weight:500;border-radius:2px;padding:3px 8px;pointer-events:none;white-space:nowrap;opacity:0;transition:opacity .15s;}
 .draggable:hover .obj-badge{opacity:1}
-.obj-name{position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);font-size:10px;color:#999;white-space:nowrap;pointer-events:none;letter-spacing:.06em;text-transform:uppercase;font-weight:400;}
-@keyframes pulse-in{0%{transform:scale(.85);opacity:0}60%{transform:scale(1.05);opacity:1}100%{transform:scale(1);opacity:1}}
+.obj-name{position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);font-size:10px;color:#999;white-space:nowrap;pointer-events:none;letter-spacing:.06em;text-transform:uppercase;font-family:'Montserrat',sans-serif;font-weight:400;}
+.drag-hint{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;color:#aaa;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:500;}
+.drag-hint svg{animation:drag-anim 1.8s ease-in-out infinite;flex-shrink:0;}
+@keyframes drag-anim{0%{transform:translate(0,0)}30%{transform:translate(10px,-6px)}60%{transform:translate(18px,0px)}100%{transform:translate(0,0)}}
+@keyframes pulse-in{0%{transform:scale(0.85);opacity:0}60%{transform:scale(1.05);opacity:1}100%{transform:scale(1);opacity:1}}
+.draggable{animation:pulse-in 0.3s ease forwards;}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>Preview · Comparador de Tamaño</h1>
-  <p class="sub">Prueba cómo se ve la mochila (fondo quitado + recorte) para cualquier producto del feed. Ideal para GitHub Pages.</p>
-
-  <div class="panel">
-    <div class="row">
-      <label class="lbl">URL del producto (o SKU)</label>
-      <input type="text" id="purl" placeholder="https://www.kipling.cl/mochila-seoul-..." value="https://www.kipling.cl/mochila-seoul-ki5210-ki1na">
-      <input type="text" id="psku" placeholder="SKU (opcional)" style="max-width:170px;flex:0 0 auto;">
-      <button class="go" id="btn-feed">Cargar del feed</button>
-    </div>
-
-    <div class="or">— o —</div>
-    <div class="row">
-      <label class="lbl">Sube un packshot local (prueba solo el recorte, sin CORS)</label>
-      <input type="file" id="file" accept="image/*">
-    </div>
-
-    <div class="toggles">
-      <label><input type="checkbox" id="quitar" checked> Quitar fondo</label>
-      <label>Tolerancia <input type="range" id="tol" min="10" max="90" value="40"> <span id="tolval">40</span></label>
-      <label><input type="checkbox" id="useproxy"> Usar proxy CORS (solo test)</label>
-    </div>
-    <div class="row" style="margin-bottom:6px;">
-      <input type="text" id="proxy" value="https://api.allorigins.win/raw?url=">
-    </div>
-    <p class="hint">Primero prueba con el proxy <b>desmarcado</b>: si carga directo desde GitHub, es que el CORS ya está y producción también funcionará. Si falla, márcalo para ver el preview igual (proxy público, solo para testear).</p>
-
-    <div class="log" id="log"><span class="dim">Listo. Pega una URL y dale "Cargar del feed", o sube una imagen.</span>
-</div>
+<div class="comparator">
+  <div class="kip-header">
+    <p class="section-label">Comparar con</p>
+    <div class="chips" id="chips"></div>
   </div>
-
-  <div class="comparator">
-    <div class="kip-header">
-      <p class="section-label">Comparar con</p>
-      <div class="chips" id="chips"></div>
-    </div>
-    <div class="stage" id="stage">
-      <div class="bag-wrap ph-on" id="bag-wrap">
-        <img class="bag-img" id="bag-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Mochila"/>
-        <div class="ph-txt">Carga un producto<br>o sube una imagen</div>
-        <div class="dim-v"><div class="tick-v"></div><div class="dbar"></div><span class="dlabel">44 cm</span><div class="dbar"></div><div class="tick-v"></div></div>
-        <div class="dim-h"><div class="tick-h"></div><div class="dbar"></div><span class="dlabel">35 cm</span><div class="dbar"></div><div class="tick-h"></div></div>
-      </div>
+  <div class="stage" id="stage">
+    <div class="bag-wrap" id="bag-wrap">
+      <img class="bag-img" id="bag-img" src="bag.png" alt="Mochila Kipling Seoul" draggable="false"/>
+      <div class="dim-v"><div class="tick-v"></div><div class="dbar"></div><span class="dlabel">44 cm</span><div class="dbar"></div><div class="tick-v"></div></div>
+      <div class="dim-h"><div class="tick-h"></div><div class="dbar"></div><span class="dlabel">35 cm</span><div class="dbar"></div><div class="tick-h"></div></div>
     </div>
   </div>
+  <div class="drag-hint">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M7 2C7 1.44772 7.44772 1 8 1C8.55228 1 9 1.44772 9 2V9.5H10.5V5C10.5 4.44772 10.9477 4 11.5 4C12.0523 4 12.5 4.44772 12.5 5V9.5H13.5V6.5C13.5 5.94772 13.9477 5.5 14.5 5.5C15.0523 5.5 15.5 5.94772 15.5 6.5V11C15.5 11 15.5 11.5 15.5 12C15.5 14.4853 13.4853 16.5 11 16.5H10C8.067 16.5 6.5 14.933 6.5 13V10H5.5C4.94772 10 4.5 9.55228 4.5 9C4.5 8.44772 4.94772 8 5.5 8H7V2Z" fill="#ccc"/>
+    </svg>
+    Arrastra los objetos sobre la mochila para comparar su tamaño
+  </div>
 </div>
-
 <script>
-/* ================= CONFIG ================= */
-const FEED_URL='https://resources.komaxchile.cl/google-feeds/kipling-cl-google-feed.xml';
 const BAG_REAL={w:35,h:44};
-const RATIO_REAL=BAG_REAL.w/BAG_REAL.h; // 0.795
-const MAX_PX=1000;
 const ITEMS=[
   {id:'bottle',label:'Botella 700ml',w:12.25,h:31.0,src:'bottle.png'},
   {id:'notebook',label:'Cuaderno',w:21.0,h:29.7,src:'notebook.png'},
@@ -126,188 +73,277 @@ const ITEMS=[
 let activeItem='bottle';
 let PX_PER_CM=8;
 
-/* ================= LOG ================= */
-const logBox=()=>document.getElementById('log');
-function clog(msg,cls){const s=document.createElement('span');if(cls)s.className=cls;s.textContent=msg+'\n';logBox().appendChild(s);logBox().scrollTop=logBox().scrollHeight;}
-function clearLog(){logBox().textContent='';}
+/* =================================================================
+   IMAGEN PRINCIPAL DINÁMICA — se toma del Google feed (g:image_link)
+   Así la foto siempre calza con el color del producto de la página.
+   Si algo falla, se queda con bag.png (nunca se rompe la vista).
+   ================================================================= */
+const FEED_URL='https://resources.komaxchile.cl/google-feeds/kipling-cl-google-feed.xml';
+const CACHE_HOURS=6; // el feed se actualiza a diario; cacheamos por sesión
 
-/* ================= HELPERS FEED / IMAGEN ================= */
-function normPath(u){try{return new URL(u,'https://x').pathname.replace(/\/+$/,'').toLowerCase();}catch(e){return String(u||'').split('?')[0].replace(/\/+$/,'').toLowerCase();}}
+// Normaliza una URL a solo su path, en minúsculas y sin "/" final
+function normPath(u){
+  try{return new URL(u,location.origin).pathname.replace(/\/+$/,'').toLowerCase();}
+  catch(e){return String(u||'').split('?')[0].replace(/\/+$/,'').toLowerCase();}
+}
+// Normaliza un SKU/ID: solo letras y números en minúscula
 function normSku(s){return String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');}
+
+/* Cómo sabe el widget QUÉ producto es:
+   1) ?url=<url del producto>   -> recomendado si el widget va en un <iframe>
+   2) ?sku=<sku>  ó  ?pid=<sku>
+   3) por defecto: la URL de la página actual (si vive dentro del PDP)      */
+function resolveProductRef(){
+  const q=new URLSearchParams(location.search);
+  const url=q.get('url')||location.href;
+  const sku=q.get('sku')||q.get('pid')||'';
+  return {path:normPath(url),sku:sku.trim()};
+}
+
+// Lee el primer tag con texto de una lista de nombres (maneja el namespace g:)
 function firstText(item,names){
-  for(const n of names){const els=item.getElementsByTagName(n);if(els.length&&els[0].textContent.trim())return els[0].textContent.trim();}
+  for(const n of names){
+    const els=item.getElementsByTagName(n);
+    if(els.length&&els[0].textContent.trim())return els[0].textContent.trim();
+  }
   const locals=names.map(n=>n.split(':').pop().toLowerCase());
   const all=item.getElementsByTagName('*');
-  for(let i=0;i<all.length;i++){const el=all[i];if(locals.includes((el.localName||'').toLowerCase())&&el.textContent.trim())return el.textContent.trim();}
+  for(let i=0;i<all.length;i++){
+    const el=all[i];
+    if(locals.includes((el.localName||'').toLowerCase())&&el.textContent.trim())
+      return el.textContent.trim();
+  }
   return '';
 }
-async function fetchText(url,useProxy,proxy){
-  const target=useProxy?proxy+encodeURIComponent(url):url;
-  const r=await fetch(target);
-  if(!r.ok)throw new Error('HTTP '+r.status);
-  return r.text();
-}
-async function fetchBlobURL(url,proxy){
-  const r=await fetch(proxy+encodeURIComponent(url));
-  if(!r.ok)throw new Error('HTTP '+r.status);
-  return URL.createObjectURL(await r.blob());
-}
-function matchImage(xmlText,ref){
-  const doc=new DOMParser().parseFromString(xmlText,'application/xml');
-  if(doc.getElementsByTagName('parsererror').length)throw new Error('XML inválido (¿el proxy devolvió HTML?)');
+
+async function fetchFeedImage(ref){
+  const key='kip_bag_'+(ref.sku||ref.path);
+  try{
+    const c=JSON.parse(sessionStorage.getItem(key)||'null');
+    if(c&&c.img&&(Date.now()-c.t)<CACHE_HOURS*3600e3)return c.img;
+  }catch(e){}
+
+  const res=await fetch(FEED_URL,{mode:'cors'});
+  if(!res.ok)throw new Error('feed HTTP '+res.status);
+  const doc=new DOMParser().parseFromString(await res.text(),'application/xml');
+  if(doc.getElementsByTagName('parsererror').length)throw new Error('XML inválido');
+
   const items=doc.getElementsByTagName('item');
-  if(!items.length)throw new Error('el feed no trae <item> (¿respuesta vacía?)');
   const wantSku=normSku(ref.sku);
+  let img='';
   for(let i=0;i<items.length;i++){
     const it=items[i];
     const link=normPath(firstText(it,['g:link','link']));
     const id=normSku(firstText(it,['g:id','g:mpn','g:item_group_id']));
     const byUrl=ref.path&&link&&link===ref.path;
     const bySku=wantSku&&id&&(id===wantSku||id.includes(wantSku)||wantSku.includes(id));
-    if(byUrl||bySku){const im=firstText(it,['g:image_link','image_link']);if(im)return im;}
+    if(byUrl||bySku){
+      img=firstText(it,['g:image_link','image_link']);
+      if(img)break;
+    }
   }
-  return '';
+  if(img){try{sessionStorage.setItem(key,JSON.stringify({t:Date.now(),img}));}catch(e){}}
+  return img;
 }
 
-/* ================= QUITAR FONDO + RECORTE ================= */
-function cargarImg(src){return new Promise((res,rej)=>{const im=new Image();im.crossOrigin='anonymous';im.onload=()=>res(im);im.onerror=()=>rej(new Error('no cargó la imagen (¿CORS o URL mala?)'));im.src=src;});}
-function quitarFondo(data,w,h,tol){
-  const d=data.data,at=(x,y)=>(y*w+x)*4;
-  const c=[at(0,0),at(w-1,0),at(0,h-1),at(w-1,h-1)];
-  let br=0,bgc=0,bbc=0;c.forEach(i=>{br+=d[i];bgc+=d[i+1];bbc+=d[i+2];});br/=4;bgc/=4;bbc/=4;
-  const cerca=i=>{const r=d[i]-br,g=d[i+1]-bgc,b=d[i+2]-bbc;return (r*r+g*g+b*b)<tol*tol;};
-  const vis=new Uint8Array(w*h),st=[];
-  const push=(x,y)=>{if(x>=0&&x<w&&y>=0&&y<h){const p=y*w+x;if(!vis[p]){vis[p]=1;st.push(p);}}};
-  for(let x=0;x<w;x++){push(x,0);push(x,h-1);}
-  for(let y=0;y<h;y++){push(0,y);push(w-1,y);}
-  while(st.length){const p=st.pop(),i=p*4;if(!cerca(i))continue;d[i+3]=0;const x=p%w,y=(p/w)|0;push(x+1,y);push(x-1,y);push(x,y+1);push(x,y-1);}
+/* --- Quitar fondo + recorte en el navegador (canvas) ---
+   Lee la foto del feed, borra el fondo conectado al borde (así no come zonas
+   claras DENTRO de la mochila) y recorta al contorno. Resultado: la mochila
+   llena su caja y los ticks de 44/35 cm se respetan. Sin tocar el feed.       */
+const QUITAR_FONDO=true;   // false = usa la foto del feed tal cual, con fondo
+const MAX_PX=1000;         // tope del lado mayor al procesar (rendimiento)
+const TOL_FONDO=40;        // tolerancia de color vs. el fondo (súbela si queda halo)
+
+function cargarImg(url){
+  return new Promise((res,rej)=>{
+    const im=new Image();
+    im.crossOrigin='anonymous';           // necesario para poder leer los píxeles
+    im.onload=()=>res(im);
+    im.onerror=()=>rej(new Error('no cargó la imagen (¿CORS?)'));
+    im.src=url;
+  });
 }
+
+function quitarFondo(data,w,h,tol){
+  const d=data.data, at=(x,y)=>(y*w+x)*4;
+  const c=[at(0,0),at(w-1,0),at(0,h-1),at(w-1,h-1)];   // color de fondo = esquinas
+  let br=0,bgc=0,bbc=0;
+  c.forEach(i=>{br+=d[i];bgc+=d[i+1];bbc+=d[i+2];});
+  br/=4;bgc/=4;bbc/=4;
+  const cerca=i=>{const r=d[i]-br,g=d[i+1]-bgc,b=d[i+2]-bbc;return (r*r+g*g+b*b)<tol*tol;};
+  const vis=new Uint8Array(w*h), st=[];
+  const push=(x,y)=>{if(x>=0&&x<w&&y>=0&&y<h){const p=y*w+x;if(!vis[p]){vis[p]=1;st.push(p);}}};
+  for(let x=0;x<w;x++){push(x,0);push(x,h-1);}       // flood fill desde los bordes
+  for(let y=0;y<h;y++){push(0,y);push(w-1,y);}
+  while(st.length){
+    const p=st.pop(), i=p*4;
+    if(!cerca(i))continue;
+    d[i+3]=0;                                          // transparente
+    const x=p%w, y=(p/w)|0;
+    push(x+1,y);push(x-1,y);push(x,y+1);push(x,y-1);
+  }
+}
+
 function bboxAlpha(data,w,h){
-  const d=data.data;let x0=w,y0=h,x1=-1,y1=-1;
-  for(let y=0;y<h;y++)for(let x=0;x<w;x++){if(d[(y*w+x)*4+3]>10){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}}
+  const d=data.data; let x0=w,y0=h,x1=-1,y1=-1;
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+    if(d[(y*w+x)*4+3]>10){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}
+  }
   return x1<0?null:{x0,y0,x1,y1};
 }
-async function procesarImagen(src){
-  const img=await cargarImg(src);
+
+async function procesarImagen(url){
+  const img=await cargarImg(url);
   let w=img.naturalWidth,h=img.naturalHeight;
-  const s=Math.min(1,MAX_PX/Math.max(w,h));w=Math.round(w*s);h=Math.round(h*s);
+  const s=Math.min(1,MAX_PX/Math.max(w,h));
+  w=Math.round(w*s);h=Math.round(h*s);
   const cv=document.createElement('canvas');cv.width=w;cv.height=h;
-  const ctx=cv.getContext('2d',{willReadFrequently:true});ctx.drawImage(img,0,0,w,h);
+  const ctx=cv.getContext('2d',{willReadFrequently:true});
+  ctx.drawImage(img,0,0,w,h);
   let data;
-  try{data=ctx.getImageData(0,0,w,h);}catch(e){throw new Error('canvas tainted: falta CORS en el host de la imagen');}
-  const tol=+document.getElementById('tol').value;
-  quitarFondo(data,w,h,tol);ctx.putImageData(data,0,0);
-  const b=bboxAlpha(data,w,h);if(!b)throw new Error('no se detectó la mochila (ajusta la tolerancia)');
-  const pad=2,bx=Math.max(0,b.x0-pad),by=Math.max(0,b.y0-pad),bw=Math.min(w-1,b.x1+pad)-bx+1,bh=Math.min(h-1,b.y1+pad)-by+1;
+  try{data=ctx.getImageData(0,0,w,h);}
+  catch(e){throw new Error('canvas tainted: falta CORS en el host de las imágenes');}
+  quitarFondo(data,w,h,TOL_FONDO);
+  ctx.putImageData(data,0,0);
+  const b=bboxAlpha(data,w,h);
+  if(!b)throw new Error('no se detectó la mochila (revisa TOL_FONDO)');
+  const pad=2;
+  const bx=Math.max(0,b.x0-pad),by=Math.max(0,b.y0-pad);
+  const bw=Math.min(w-1,b.x1+pad)-bx+1,bh=Math.min(h-1,b.y1+pad)-by+1;
   const out=document.createElement('canvas');out.width=bw;out.height=bh;
   out.getContext('2d').drawImage(cv,bx,by,bw,bh,0,0,bw,bh);
-  return {url:out.toDataURL('image/png'),w:bw,h:bh,ratio:bw/bh};
+  return out.toDataURL('image/png');
 }
 
-/* ================= RENDER BAG ================= */
-function setBag(src){
-  const bagImg=document.getElementById('bag-img'),wrap=document.getElementById('bag-wrap');
-  bagImg.onload=()=>{wrap.classList.remove('ph-on');wrap.classList.add('has-img');};
-  bagImg.src=src;
-}
-async function renderBag(rawUrl,opts){
-  const quitar=document.getElementById('quitar').checked;
-  if(!quitar){clog('2) Quitar fondo: OFF → muestro la foto tal cual (con fondo).','dim');setBag(rawUrl);return;}
-  clog('2) Quitando fondo y recortando…','dim');
+/* --- Imagen de la mochila: se toma de la PROPIA página del producto ---
+   Si el widget vive dentro del PDP, la foto principal ya está en el DOM
+   (og:image o la galería Magento): cero fetch, cero CORS. Orden de intento:
+   ?img=  →  página actual  →  página padre (iframe same-origin)  →  feed.   */
+function pickFromDoc(doc){
   try{
-    let src=rawUrl;
-    if(!opts.isBlob&&opts.useProxy){src=await fetchBlobURL(rawUrl,opts.proxy);}
-    const r=await procesarImagen(src);
-    setBag(r.url);
-    clog('   ✓ Recorte '+r.w+'×'+r.h+'px · ratio '+r.ratio.toFixed(3)+' (objetivo '+RATIO_REAL.toFixed(3)+')','ok');
-    if(Math.abs(r.ratio-RATIO_REAL)/RATIO_REAL>0.12)
-      clog('   ⚠ El ratio se aleja de 35:44 — probablemente el asa/manilla estira el recorte. Decide si los 44 cm la incluyen.','warn');
+    const og=doc.querySelector('meta[property="og:image"]');
+    if(og&&og.content)return og.content;
+    const inits=doc.querySelectorAll('script[type="text/x-magento-init"]');
+    for(let k=0;k<inits.length;k++){
+      try{
+        const j=JSON.parse(inits[k].textContent);
+        const ph=j['[data-gallery-role=gallery-placeholder]'];
+        const g=ph&&ph['mage/gallery/gallery'];
+        if(g&&g.data&&g.data.length){const m=g.data.find(d=>d.isMain)||g.data[0];if(m&&(m.full||m.img))return m.full||m.img;}
+      }catch(e){}
+    }
+    const im=doc.querySelector('[data-gallery-role="gallery-placeholder"] img,.gallery-placeholder img,.fotorama__img,.product.media img');
+    if(im&&im.src)return im.src;
+  }catch(e){}
+  return '';
+}
+async function getBagImageUrl(){
+  const q=new URLSearchParams(location.search);
+  if(q.get('img'))return q.get('img');            // 1) ?img= explícito (iframe)
+  let u=pickFromDoc(document);                     // 2) la página actual (PDP)
+  if(u)return u;
+  try{if(window.parent&&window.parent!==window){   // 3) página padre (iframe same-origin)
+    u=pickFromDoc(window.parent.document);if(u)return u;}}catch(e){}
+  try{return await fetchFeedImage(resolveProductRef());}catch(e){return '';} // 4) feed
+}
+
+async function applyDynamicBag(){
+  const bagImg=document.getElementById('bag-img');
+  let url;
+  try{
+    url=await getBagImageUrl();
+    if(!url){console.warn('[comparador] no encontré la imagen del producto, uso bag.png');return;}
   }catch(e){
-    clog('   ✗ '+e.message,'err');
-    if(/tainted|CORS/i.test(e.message))
-      clog('   → El navegador no puede leer los píxeles: falta CORS en el host de imágenes. En producción, si las fotos salen del MISMO dominio de la tienda, esto no pasa. Para el test, marca "usar proxy".','warn');
-    clog('   Fallback: muestro la foto con fondo.','dim');
-    setBag(rawUrl);
+    console.warn('[comparador] no pude obtener la imagen, uso bag.png:',e.message);return;
+  }
+  if(!QUITAR_FONDO){bagImg.src=url;return;}
+  try{
+    bagImg.src=await procesarImagen(url);   // transparente y recortada: medidas OK
+  }catch(e){
+    // No se pudo quitar el fondo (típico: falta CORS en el host de imágenes).
+    // Fallback: muestro la foto tal cual — color correcto, pero las medidas
+    // pueden quedar algo corridas por el fondo. El warning te avisa qué pasó.
+    console.warn('[comparador] no pude quitar el fondo, uso la foto tal cual:',e.message);
+    bagImg.src=url;
   }
 }
+/* ================================================================= */
 
-/* ================= ACCIONES ================= */
-async function loadFromFeed(){
-  clearLog();
-  const url=document.getElementById('purl').value.trim();
-  const sku=document.getElementById('psku').value.trim();
-  if(!url&&!sku){clog('Pon una URL de producto o un SKU.','err');return;}
-  const useProxy=document.getElementById('useproxy').checked;
-  const proxy=document.getElementById('proxy').value.trim();
-  clog('1) Leyendo feed '+(useProxy?'(vía proxy)…':'(directo)…'),'dim');
-  let img;
-  try{
-    const xml=await fetchText(FEED_URL,useProxy,proxy);
-    img=matchImage(xml,{path:normPath(url),sku});
-    if(!img){clog('   ✗ No encontré ese producto en el feed. Revisa la URL/SKU exactos.','err');return;}
-    clog('   ✓ Producto encontrado en el feed.','ok');
-    clog('   imagen: '+img,'dim');
-  }catch(e){
-    clog('   ✗ No pude leer el feed: '+e.message,'err');
-    if(!useProxy)clog('   → Si es un error de CORS/red, marca "usar proxy" para ver el preview igual.','warn');
-    return;
-  }
-  await renderBag(img,{useProxy,proxy,isBlob:false});
-}
-function loadFromFile(file){
-  clearLog();
-  clog('Imagen local cargada → proceso el recorte (sin depender de CORS).','dim');
-  renderBag(URL.createObjectURL(file),{isBlob:true});
-}
-
-/* ================= COMPARADOR ================= */
 function initScale(){
-  const stage=document.getElementById('stage'),bagImg=document.getElementById('bag-img'),wrap=document.getElementById('bag-wrap');
-  const bagPxW=stage.offsetWidth*0.50;PX_PER_CM=bagPxW/BAG_REAL.w;const bagPxH=BAG_REAL.h*PX_PER_CM;
-  bagImg.style.width=bagPxW+'px';bagImg.style.height=bagPxH+'px';
-  wrap.style.width=bagPxW+'px';wrap.style.height=bagPxH+'px';
+  const stage=document.getElementById('stage');
+  const bagImg=document.getElementById('bag-img');
+  const bagPxW=stage.offsetWidth*0.50;
+  PX_PER_CM=bagPxW/BAG_REAL.w;
+  const bagPxH=BAG_REAL.h*PX_PER_CM;
+  bagImg.style.width=bagPxW+'px';
+  bagImg.style.height=bagPxH+'px';
   stage.style.height=(bagPxH*1.6)+'px';
 }
+
 function spawnItem(item){
   const stage=document.getElementById('stage');
   if(document.getElementById('drag-'+item.id))return;
   const pw=item.w*PX_PER_CM,ph=item.h*PX_PER_CM;
   const sR=stage.getBoundingClientRect(),bR=document.getElementById('bag-wrap').getBoundingClientRect();
-  let cx=bR.left-sR.left+bR.width/2-pw/2,cy=bR.top-sR.top+bR.height/2-ph/2;
-  cx=Math.max(0,Math.min(sR.width-pw,cx));cy=Math.max(0,Math.min(sR.height-ph,cy));
-  const el=document.createElement('div');el.className='draggable';el.id='drag-'+item.id;
-  el.style.cssText='left:'+cx+'px;top:'+cy+'px;width:'+pw+'px;height:'+ph+'px;';
-  const wl=Number.isInteger(item.w)?item.w:item.w.toFixed(1),hl=Number.isInteger(item.h)?item.h:item.h.toFixed(1);
-  el.innerHTML='<img src="'+item.src+'" alt="'+item.label+'" draggable="false" onerror="this.style.display=\'none\';this.parentElement.classList.add(\'ph\')"><div class="obj-badge">'+wl+' × '+hl+' cm</div><div class="obj-name">'+item.label+'</div>';
-  stage.appendChild(el);makeDraggable(el,stage);
+  let cx=bR.left-sR.left+bR.width/2-pw/2;
+  let cy=bR.top-sR.top+bR.height/2-ph/2;
+  cx=Math.max(0,Math.min(sR.width-pw,cx));
+  cy=Math.max(0,Math.min(sR.height-ph,cy));
+  const el=document.createElement('div');
+  el.className='draggable';el.id='drag-'+item.id;
+  el.style.cssText=`left:${cx}px;top:${cy}px;width:${pw}px;height:${ph}px;`;
+  const wl=Number.isInteger(item.w)?item.w:item.w.toFixed(1);
+  const hl=Number.isInteger(item.h)?item.h:item.h.toFixed(1);
+  el.innerHTML=`<img src="${item.src}" alt="${item.label}" draggable="false"/><div class="obj-badge">${wl} × ${hl} cm</div><div class="obj-name">${item.label}</div>`;
+  stage.appendChild(el);
+  makeDraggable(el,stage);
 }
+
 function removeItem(id){const el=document.getElementById('drag-'+id);if(el)el.remove();}
+
 function makeDraggable(el,container){
   let ox=0,oy=0,sx=0,sy=0,dragging=false;
   const start=(cx,cy)=>{dragging=true;sx=cx;sy=cy;ox=parseFloat(el.style.left);oy=parseFloat(el.style.top);el.style.zIndex=20;};
-  const move=(cx,cy)=>{if(!dragging)return;const r=container.getBoundingClientRect(),elW=parseFloat(el.style.width),elH=parseFloat(el.style.height);let nx=ox+(cx-sx),ny=oy+(cy-sy);nx=Math.max(0,Math.min(r.width-elW,nx));ny=Math.max(0,Math.min(r.height-elH,ny));el.style.left=nx+'px';el.style.top=ny+'px';};
+  const move=(cx,cy)=>{
+    if(!dragging)return;
+    const r=container.getBoundingClientRect();
+    const elW=parseFloat(el.style.width),elH=parseFloat(el.style.height);
+    let nx=ox+(cx-sx),ny=oy+(cy-sy);
+    nx=Math.max(0,Math.min(r.width-elW,nx));
+    ny=Math.max(0,Math.min(r.height-elH,ny));
+    el.style.left=nx+'px';el.style.top=ny+'px';
+  };
   const end=()=>{dragging=false;el.style.zIndex=5;};
   el.addEventListener('mousedown',e=>{e.preventDefault();start(e.clientX,e.clientY);});
-  document.addEventListener('mousemove',e=>move(e.clientX,e.clientY));document.addEventListener('mouseup',end);
+  document.addEventListener('mousemove',e=>move(e.clientX,e.clientY));
+  document.addEventListener('mouseup',end);
   el.addEventListener('touchstart',e=>{e.preventDefault();start(e.touches[0].clientX,e.touches[0].clientY);},{passive:false});
   document.addEventListener('touchmove',e=>{if(dragging){e.preventDefault();move(e.touches[0].clientX,e.touches[0].clientY);}},{passive:false});
   document.addEventListener('touchend',end);
 }
+
 function buildChips(){
   const c=document.getElementById('chips');
-  c.innerHTML=ITEMS.map(o=>'<button class="chip'+(activeItem===o.id?' on':'')+'" data-id="'+o.id+'">'+o.label+'</button>').join('');
-  c.querySelectorAll('.chip').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.dataset.id;if(activeItem===id)return;removeItem(activeItem);activeItem=id;spawnItem(ITEMS.find(i=>i.id===id));buildChips();}));
+  c.innerHTML=ITEMS.map(o=>`<button class="chip${activeItem===o.id?' on':''}" data-id="${o.id}">${o.label}</button>`).join('');
+  c.querySelectorAll('.chip').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const id=btn.dataset.id;
+      if(activeItem===id) return;
+      removeItem(activeItem);
+      activeItem=id;
+      spawnItem(ITEMS.find(i=>i.id===id));
+      buildChips();
+    });
+  });
 }
 
-/* ================= BOOT ================= */
 buildChips();
-initScale();
-setTimeout(()=>spawnItem(ITEMS.find(i=>i.id===activeItem)),60);
-document.getElementById('btn-feed').addEventListener('click',loadFromFeed);
-document.getElementById('purl').addEventListener('keydown',e=>{if(e.key==='Enter')loadFromFeed();});
-document.getElementById('file').addEventListener('change',e=>{if(e.target.files[0])loadFromFile(e.target.files[0]);});
-document.getElementById('tol').addEventListener('input',e=>{document.getElementById('tolval').textContent=e.target.value;});
-let rz;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{const cur=activeItem;removeItem(cur);initScale();spawnItem(ITEMS.find(i=>i.id===cur));},150);});
+function boot(){
+  initScale();
+  applyDynamicBag(); // intenta reemplazar bag.png por la imagen del feed
+  setTimeout(()=>spawnItem(ITEMS.find(i=>i.id===activeItem)),80);
+}
+if(document.readyState!=='loading')boot();else document.addEventListener('DOMContentLoaded',boot);
 </script>
 </body>
 </html>
